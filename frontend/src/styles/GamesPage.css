@@ -1,0 +1,28 @@
+.games-page {
+  padding: 20px;
+}
+
+.games-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.games-table th,
+.games-table td {
+  border: 1px solid #ccc;
+  padding: 12px;
+  text-align: center;
+}
+
+.games-table th {
+  background-color: #f4f4f4;
+}
+
+.games-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.games-table tr:hover {
+  background-color: #ececec;
+}
