@@ -14,30 +14,31 @@ function GamesPage() {
   return (
     <div className="games-page">
       <h1>Games</h1>
-
-      <table className="games-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Black</th>
-            <th>White</th>
-            <th>Winner</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {games.map((game) => (
-            <tr key={game.id}>
-              <td>{game.id}</td>
-              <td>{game.player1_name}</td>
-              <td>{game.player2_name}</td>
-              <td>{game.winner_name}</td>
-              <td>{game.date}</td>
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <table className="games-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Black</th>
+              <th>White</th>
+              <th>Winner</th>
+              <th>Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {games.map((game) => (
+              <tr key={game.id}>
+                <td>{game.id}</td>
+                <td>{game.player1_name}</td>
+                <td>{game.player2_name}</td>
+                <td>{game.winner_name}</td>
+                <td>{game.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

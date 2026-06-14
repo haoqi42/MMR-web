@@ -8,11 +8,16 @@ export default function RecordGamePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setMessage("You must be logged in as an admin to record a game.");
+      return;
+    }
     const response = await fetch(`http://localhost:8000/game`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       body: JSON.stringify({
         player1_name: p1_name,
@@ -36,53 +41,48 @@ export default function RecordGamePage() {
   };
 
   return (
-    <div>
+    <div className="page">
       <h1>Record Game</h1>
+      <div className="card">
+        <form onSubmit={handleSubmit}>
+          <label>
+            Player 1
+            <input
+              type="text"
+              value={p1_name}
+              onChange={(e) => setP1_name(e.target.value)}
+              placeholder="Enter player name"
+              required
+            />
+          </label>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Player 1: 
-          <input
-            type="text"
-            value={p1_name}
-            onChange={(e) => setP1_name(e.target.value)}
-            placeholder="Enter player name"
-            required
-          />
-        </label>
+          <label>
+            Player 2
+            <input
+              type="text"
+              value={p2_name}
+              onChange={(e) => setP2_name(e.target.value)}
+              placeholder="Enter player name"
+              required
+            />
+          </label>
 
-        <br />
+          <label>
+            Winner
+            <input
+              type="text"
+              value={winner_name}
+              onChange={(e) => setWinner_name(e.target.value)}
+              placeholder="Enter player name"
+              required
+            />
+          </label>
 
-        <label>
-          Player 2: 
-          <input
-            type="text"
-            value={p2_name}
-            onChange={(e) => setP2_name(e.target.value)}
-            placeholder="Enter player name"
-            required
-          />
-        </label>
+          <button type="submit">Record Game</button>
+        </form>
 
-        <br />
-
-        <label>
-          Winner: 
-          <input
-            type="text"
-            value={winner_name}
-            onChange={(e) => setWinner_name(e.target.value)}
-            placeholder="Enter player name"
-            required
-          />
-        </label>
-
-        <br />
-
-        <button type="submit">Record Game</button>
-      </form>
-
-      {message && <p>{message}</p>}
+        {message && <p className="message">{message}</p>}
+      </div>
     </div>
   );
 }

@@ -22,3 +22,7 @@ class playerCreateRequest(BaseModel):
 class playerResponse(BaseModel):
     name: str
     rank: str
+
+class loginRequest(BaseModel):
+    username: str
+    password: str

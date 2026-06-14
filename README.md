@@ -182,3 +182,9 @@ curl http://localhost:8000/players/1
 * Make sure backend is running before starting the frontend.
 
 ---
+
+## Planned Features
+
+* Login System for Administrators (implementing rbac for actions like adding/removing players and games)
+* Rating History and Game History Page
+* UI overhaul

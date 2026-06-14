@@ -2,7 +2,8 @@ from fastapi import FastAPI, Depends
 from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from database import engine, Base, SessionLocal
+from auth import get_current_user, require_admin
+from database import engine, Base, SessionLocal, get_db
 from models import Player, Game
 from rating import update
 import services
@@ -24,12 +25,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @app.get("/")
@@ -44,28 +39,42 @@ def get_players(db: Session = Depends(get_db), response_model=list[schemas.playe
 def get_player(name: str, db: Session = Depends(get_db), response_model=schemas.playerResponse):
     return services.get_player_by_name(db, name)
 
+@app.get("/games", response_model=list[schemas.gameResponse])
+def get_games(db: Session = Depends(get_db)):
+    return services.get_games_from_db(db)
+
+
+#------------------------------------------------------------------------------------------------------------
+# These requests are gated by rbac (Admins only can access)
+#------------------------------------------------------------------------------------------------------------
+
 @app.post("/player")
-def create_player(player: schemas.playerCreateRequest, db: Session = Depends(get_db)):
+def create_player(player: schemas.playerCreateRequest, db: Session = Depends(get_db), _=Depends(require_admin)):
     return services.create_player_in_db(
         db, 
         player.name, 
         player.rank
     )
 
-@app.post("/match/{p1_id}/{p2_id}/{winner_id}")
-def record_match(p1_id: int, p2_id: int, winner_id: int, db: Session = Depends(get_db)):
-    #add game record
-    return services.record_match_in_db(db, p1_id, p2_id, winner_id)
-
-@app.get("/games", response_model=list[schemas.gameResponse])
-def get_games(db: Session = Depends(get_db)):
-    return services.get_games_from_db(db)
 
 @app.post("/game")
-def record_match_by_name(game: schemas.gameCreateRequest, db: Session = Depends(get_db)):
+def record_match_by_name(game: schemas.gameCreateRequest, db: Session = Depends(get_db), _=Depends(require_admin)):
     return services.record_match_by_name(
         db,
         game.player1_name,
         game.player2_name,
         game.winner_name
     )
+
+
+#------------------------------------------------------------------------------------------------------------
+# Login/logout
+#------------------------------------------------------------------------------------------------------------
+
+@app.post("/login")
+def login(credentials: schemas.loginRequest, db: Session = Depends(get_db)):
+    return services.login(db, credentials.username, credentials.password)
+
+@app.get("/me")
+def me(current_user=Depends(get_current_user)):
+      return {"username": current_user.username, "role": current_user.role}

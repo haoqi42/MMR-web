@@ -1,7 +1,8 @@
-from models import Player, Game
+from models import Player, Game, User
 from rating import update, elo_to_rank, rank_to_elo
 from fastapi import HTTPException
 from datetime import datetime
+import auth
 
 #create player in database, returns player object
 def create_player_in_db(db, name: str, rank: str):
@@ -146,3 +147,18 @@ def get_games_from_db(db):
         for game in games
     ]
 
+
+#Login function, returns access token
+def login(db, username: str, password: str):
+    user = db.query(User).filter(User.username == username).first()
+
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    if not auth.verify_password(password, user.password_hash):
+        raise HTTPException(status_code=401, detail="Invalid username or password")
+    
+    access_token = auth.create_access_token(data={"sub": user.username})
+
+    if not access_token:
+        raise HTTPException(status_code=500, detail="Failed to create access token")
+    return {"access_token": access_token, "token_type": "bearer"}
