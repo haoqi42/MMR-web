@@ -1,6 +1,6 @@
-# Elo App
+# Go Rank
 
-A simple Elo rating application with a backend API and frontend client.
+A simple application for tracking Go Ranks
 
 ---
 
