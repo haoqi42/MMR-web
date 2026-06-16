@@ -22,7 +22,7 @@ export default function RecordGamePage() {
       body: JSON.stringify({
         player1_name: p1_name,
         player2_name: p2_name,
-        winner_name: winner_name
+        winner_name: winner_name,
       }),
     });
 

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 class gameResponse(BaseModel):
@@ -8,7 +10,7 @@ class gameResponse(BaseModel):
     player2_name: str
     winner_id: int
     winner_name: str
-    date: str
+    date: datetime
 
 class gameCreateRequest(BaseModel):
     player1_name: str

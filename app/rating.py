@@ -1,6 +1,6 @@
 import math
 
-K = 100
+K = 150
 
 #Returns the expected score of player 1 against player 2, score is 1 if player 1 wins, 0 if player 2 wins
 def expected(r1, r2):
@@ -10,7 +10,7 @@ def expected(r1, r2):
 def update(r1, r2, score, handicap=0):
     r1 += handicap
     e = expected(r1, r2)
-    return r1 + K * (score - e), r2 + K * ((1 - score) - (1 - e))
+    return max(0,r1 + K * (score - e)), max(0,r2 + K * ((1 - score) - (1 - e)))
 
 #Converts an Elo rating to a Go rank, where 30 Kyu is the lowest rank and 9 Dan is the highest. Ranks are in increments of 100 Elo points, with 30 Kyu at 0 Elo
 def elo_to_rank(rating):
@@ -25,3 +25,10 @@ def rank_to_elo(rank):
         return (30 - int(rank.split()[0])) * 100
     else:
         return (int(rank.split()[0]) + 28) * 100
+
+#converts elo to go rank (float)
+def elo_to_rank_float(rating):
+    if rating < 2900:
+        return 30 - rating/100
+    else:
+        return rating/100 - 28 

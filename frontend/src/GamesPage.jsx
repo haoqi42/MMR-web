@@ -33,7 +33,7 @@ function GamesPage() {
                 <td>{game.player1_name}</td>
                 <td>{game.player2_name}</td>
                 <td>{game.winner_name}</td>
-                <td>{game.date}</td>
+                <td>{new Date(game.date).toLocaleDateString()}</td>
               </tr>
             ))}
           </tbody>

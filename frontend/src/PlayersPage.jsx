@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function PlayersPage() {
   const [players, setPlayers] = useState([]);
@@ -23,7 +24,9 @@ function PlayersPage() {
           <tbody>
             {players.map((p, i) => (
               <tr key={i} style={{ borderBottom: "1px solid var(--border)" }}>
-                <td style={{ padding: "12px 14px", color: "var(--text)" }}>{p.name}</td>
+                <td style={{ padding: "12px 14px", color: "var(--text)" }}>
+                  <Link to={`/players/${p.name}`} style={{ color: "var(--text)" }}>{p.name}</Link>
+                </td>
                 <td style={{ padding: "12px 14px", color: "var(--green)", fontWeight: 600 }}>{p.rank}</td>
               </tr>
             ))}

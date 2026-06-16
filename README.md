@@ -185,6 +185,8 @@ curl http://localhost:8000/players/1
 
 ## Planned Features
 
-* Login System for Administrators (implementing rbac for actions like adding/removing players and games)
-* Rating History and Game History Page
-* UI overhaul
+* ~~Login System for Administrators (implementing rbac for actions like adding/removing players and games)~~
+* ~~Rating History and Game History Page~~
+* ~~UI overhaul~~
+* Manual rating change function for admin
+* Players page is filterable and/or searchable and/or can be sorted by ascending/descending alphabetically and/or by rating

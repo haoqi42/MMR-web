@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -10,6 +11,7 @@ class Player(Base):
     rating = Column(Float, default=800)
     k_factor = Column(Float, default=200)
     games_played = Column(Integer, default=0)
+    date = Column(DateTime, server_default=func.now())
 
 class Game(Base):
     __tablename__ = "games"
@@ -22,7 +24,7 @@ class Game(Base):
     player2_rating_before = Column(Float)
     player2_rating_after = Column(Float)
     winner_id = Column(Integer, ForeignKey("players.id"), index=True)
-    date = Column(String)
+    date = Column(DateTime, server_default=func.now())
     result = Column(String)
 
     player1 = relationship("Player", foreign_keys=[player1_id])

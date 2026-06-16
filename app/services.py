@@ -1,7 +1,6 @@
 from models import Player, Game, User
-from rating import update, elo_to_rank, rank_to_elo
+from rating import update, elo_to_rank, rank_to_elo, elo_to_rank_float
 from fastapi import HTTPException
-from datetime import datetime
 import auth
 
 #create player in database, returns player object
@@ -105,7 +104,6 @@ def record_match_in_db(db, p1_id: int, p2_id: int, winner_id: int):
         player1_rating_after=p1.rating, 
         player2_rating_before=p2.ratingBefore, 
         player2_rating_after=p2.rating,
-        date=datetime.now().date().isoformat()
     )
     db.add(game)
     db.commit()
@@ -146,7 +144,60 @@ def get_games_from_db(db):
         }
         for game in games
     ]
+#get games for a player, returns list of game objects
+def get_games_for_player(db, player_name: str):
+    player = db.query(Player).filter(Player.name == player_name).first()
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
 
+    games = db.query(Game).filter((Game.player1_id == player.id) | (Game.player2_id == player.id)).all()
+
+    games.sort(key=lambda g: g.date, reverse=True)
+
+    return [
+        {
+            "id": game.id,
+            "player1_id": game.player1_id,
+            "player1_name": game.player1.name,
+            "player2_id": game.player2_id,
+            "player2_name": game.player2.name,
+            "winner_id": game.winner_id,
+            "winner_name": game.winner.name,
+            "date": game.date
+        }
+        for game in games
+    ]
+
+def get_rank_history(db, player_name: str):
+    player = db.query(Player).filter(Player.name == player_name).first()
+    if not player:
+        raise HTTPException(status_code=404, detail="Player not found")
+
+    games = db.query(Game).filter((Game.player1_id == player.id) | (Game.player2_id == player.id)).all()
+
+    games.sort(key=lambda g: g.date)
+
+    def point(rating, date):
+        return {
+            "rank": elo_to_rank_float(rating),
+            "date": date,
+            "type": "Kyu" if rating < 2900 else "Dan",
+        }
+
+    history = []
+    for i in range(len(games)):
+        game = games[i]
+        if i == 0:
+            if player.id == game.player1_id:
+                history.append(point(game.player1_rating_before, player.date))
+            elif player.id == game.player2_id:
+                history.append(point(game.player2_rating_before, player.date))
+        if player.id == game.player1_id:
+            history.append(point(game.player1_rating_after, game.date))
+        elif player.id == game.player2_id:
+            history.append(point(game.player2_rating_after, game.date))
+    return history
+    
 
 #Login function, returns access token
 def login(db, username: str, password: str):

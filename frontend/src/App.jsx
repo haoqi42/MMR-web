@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import PlayersPage from "./PlayersPage";
+import PlayerPage from "./PlayerPage";
 import GamesPage from "./GamesPage";
 import RecordGamePage from "./RecordGamePage";
 import AddPlayerPage from "./AddPlayerPage";
@@ -36,6 +37,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<PlayersPage />} />
+        <Route path="/players/:name" element={<PlayerPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/record-game" element={<RecordGamePage />} />
         <Route path="/add-player" element={<AddPlayerPage />} />

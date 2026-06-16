@@ -1,4 +1,5 @@
 # This script is used to create an admin user in the database. Run it once before starting the application.
+# run this script from /app
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "app"))

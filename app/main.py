@@ -43,6 +43,13 @@ def get_player(name: str, db: Session = Depends(get_db), response_model=schemas.
 def get_games(db: Session = Depends(get_db)):
     return services.get_games_from_db(db)
 
+@app.get("/players/{name}/games", response_model=list[schemas.gameResponse])
+def get_player_games(name: str, db: Session = Depends(get_db)):
+    return services.get_games_for_player(db, name)
+
+@app.get("/players/{name}/graph", response_model=list)
+def get_player_rank_history(name: str, db: Session = Depends(get_db)):
+    return services.get_rank_history(db, name)
 
 #------------------------------------------------------------------------------------------------------------
 # These requests are gated by rbac (Admins only can access)
